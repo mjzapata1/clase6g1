@@ -136,6 +136,19 @@ class sistemaV:
                 return True  #eliminado con exito
         return False 
 
+    def eliminarMedicamentosMascota(self, historia):
+            for mascotadic in [self.__lista_caninos, self.__lista_felinos]:
+                if historia in mascotadic:
+                    mascota = mascotadic[historia]
+                    medicamentos_asignados = mascota.verLista_Medicamentos()
+                    if medicamentos_asignados:
+                        mascota.asignarLista_Medicamentos([])  # Eliminar la lista de medicamentos asignados
+                        print(f"Se han eliminado todos los medicamentos asignados a la mascota con historia '{historia}'.")
+                        return True
+                    else:
+                        print(f"No se encontraron medicamentos asignados a la mascota con historia '{historia}'.")
+                        return False
+            return False
 def main():
     servicio_hospitalario = sistemaV()
     # sistma=sistemaV()
@@ -146,7 +159,8 @@ def main():
                        \n3- Ver número de mascotas en el servicio 
                        \n4- Ver medicamentos que se están administrando
                        \n5- Eliminar mascota 
-                       \n6- Salir 
+                       \n6- Eliminar los medicamentos de una mascota
+                       \n7- Salir
                        \nUsted ingresó la opción: ''' )
         if menu==1: # Ingresar una mascota 
             if servicio_hospitalario.verNumeroMascotas() >= 10:
@@ -173,20 +187,18 @@ def main():
                 fecha=validarFecha()
                 nm=validarEntero("Ingrese cantidad de medicamentos: ")
                 lista_med=[]
-
+                listapersonal = []
                 for i in range(0,nm):
-                    listapersonal = []
-                    for m in range(0,nm):
-                        nombre_medicamentos = validarLetra("Ingrese el nombre del medicamento: ")
-                        if nombre_medicamentos in listapersonal:
-                            print("\nNo es posible ingresar el mismo medicamento dos veces...Intente ingresarlos nuevamente...")
-                            continue
-                        listapersonal.append(nombre_medicamentos)
-                        dosis = validarEntero("Ingrese la dosis: ")
-                        medicamento = Medicamento()
-                        medicamento.asignarNombre(nombre_medicamentos)
-                        medicamento.asignarDosis(dosis)
-                        lista_med.append(medicamento)
+                    nombre_medicamentos = validarLetra("Ingrese el nombre del medicamento: ")
+                    if nombre_medicamentos in listapersonal:
+                        print("\nNo es posible ingresar el mismo medicamento dos veces...Intente ingresarlos nuevamente...")
+                        continue
+                    listapersonal.append(nombre_medicamentos)
+                    dosis = validarEntero("Ingrese la dosis: ")
+                    medicamento = Medicamento()
+                    medicamento.asignarNombre(nombre_medicamentos)
+                    medicamento.asignarDosis(dosis)
+                    lista_med.append(medicamento)
 
                 mas= Mascota()
                 mas.asignarNombre(nombre)
@@ -231,8 +243,12 @@ def main():
                 print("Mascota eliminada del sistema con exito")
             else:
                 print("No se ha podido eliminar la mascota")
-        
+
         elif menu==6:
+            histE = validarEntero("Ingrese la historia clínica de la mascota: ")
+            resultado_operacion = servicio_hospitalario.eliminarMedicamentosMascota(histE)
+
+        elif menu==7:
             print("Usted ha salido del sistema de servicio de hospitalización...")
             break
         
